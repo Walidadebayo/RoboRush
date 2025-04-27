@@ -1,7 +1,7 @@
 # RoboRush
 
 <div align="center">
-    <img src="https://roborush-ashen.vercel.app/public/images/icon-512.png" alt="RoboRush Logo" width="100"/>>
+    <img src="https://roborush-ashen.vercel.app/images/icon-512.png" alt="RoboRush Logo" width="100"/>>
 </div>
 
 RoboRush is an engaging browser-based arcade game where players control a robot to collect energy orbs while avoiding hazards in a race against time. The game features offline play capabilities, AI assistance, and global leaderboards.
@@ -39,7 +39,7 @@ RoboRush is an engaging browser-based arcade game where players control a robot 
 
 ## 📱 Screenshots
 
-![Gameplay Screenshot](https://roborush-ashen.vercel.app/public/images/gameplay.gif)
+![Gameplay Screenshot](https://roborush-ashen.vercel.app/images/gameplay.gif)
 
 ## 🎮 How to Play
 
