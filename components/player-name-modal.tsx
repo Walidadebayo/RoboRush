@@ -18,6 +18,8 @@ export default function PlayerNameModal({
 }: PlayerNameModalProps) {
   const [name, setName] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isOffline, setIsOffline] = useState(false);
 
   useEffect(() => {
     const savedName = localStorage.getItem("roborush-player-name");
@@ -33,8 +35,14 @@ export default function PlayerNameModal({
       setError("Please enter your name");
       return;
     }
-
-    localStorage.setItem("roborush-player-name", name);
+    if (!navigator.onLine) {
+      localStorage.setItem("roborush-player-name", name);
+      setIsOffline(true);
+      setError("You are offline. Your name has been saved locally.");
+      onSubmit(name);
+      return;
+    }
+    setIsSubmitting(true);
     fetch("/api/submit-score", {
       method: "POST",
       headers: {
@@ -49,12 +57,15 @@ export default function PlayerNameModal({
         return response.json();
       })
       .then(() => {
+        localStorage.setItem("roborush-player-name", name);
         onSubmit(name);
+        setIsSubmitting(false);
       })
       .catch(() => {
         setError(
           "Failed to submit name. Please try again or use another name."
         );
+        setIsSubmitting(false);
       });
   };
 
@@ -99,9 +110,10 @@ export default function PlayerNameModal({
 
             <Button
               type="submit"
+              disabled={isSubmitting}
               className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
             >
-              Start Game
+              {isSubmitting ? "Submitting..." : "Start Game"}
             </Button>
           </form>
         </div>
