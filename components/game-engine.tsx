@@ -95,7 +95,7 @@ export default function GameEngine({
         );
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handlePhaserError = useCallback(() => {
@@ -176,11 +176,13 @@ export default function GameEngine({
       try {
         if (window.game) {
           if (window.game.sound && window.game.sound.sounds) {
-            window.game.sound.sounds.forEach((sound: { isPlaying: boolean; stop: () => void }) => {
-              if (sound.isPlaying) {
-                sound.stop();
+            window.game.sound.sounds.forEach(
+              (sound: { isPlaying: boolean; stop: () => void }) => {
+                if (sound.isPlaying) {
+                  sound.stop();
+                }
               }
-            });
+            );
           }
           window.game.destroy(true);
           window.game = null;
@@ -358,7 +360,7 @@ export default function GameEngine({
             size="icon"
             onClick={activateBoost}
             disabled={isBoostOnCooldown || !gameStarted || isPaused}
-            className={`relative ${
+            className={`relative w-min !px-2 ${
               isBoostActive
                 ? "bg-yellow-600/70 hover:bg-yellow-600/90 text-yellow-100"
                 : !isBoostOnCooldown
@@ -722,7 +724,6 @@ function initGame(
     isHit: boolean;
     totalOrbs: number;
     orbsCollected: number;
-    tileSize: number;
     isMobile: boolean;
     touchInput: { x: number; y: number };
     playerName: string;
@@ -737,6 +738,9 @@ function initGame(
     aiGuideTimer: any;
     aiTargetOrb: any;
     aiMessage: any;
+    aiEffectParticles: any;
+    boostEffectParticles: any;
+    boostMessage: any;
     overdriveMessage: any;
 
     constructor() {
@@ -747,7 +751,6 @@ function initGame(
       this.isHit = false;
       this.totalOrbs = 0;
       this.orbsCollected = 0;
-      this.tileSize = 32;
       this.isMobile = false;
       this.touchInput = { x: 0, y: 0 };
       this.playerName = "";
@@ -756,13 +759,15 @@ function initGame(
       this.invulnerable = false;
       this.boostActive = false;
       this.normalSpeed = 180;
-      this.boostSpeed = 320;
-      this.boostMessage = null;
+      this.boostSpeed = 360;
       this.aiActive = false;
       this.aiGuideTimer = null;
       this.aiTargetOrb = null;
       this.aiMessage = null;
+      this.boostMessage = null;
       this.overdriveMessage = null;
+      this.boostEffectParticles = null;
+      this.aiEffectParticles = null;
     }
 
     create() {
@@ -917,7 +922,6 @@ function initGame(
 
     setMuted(muted: boolean) {
       this.isMuted = muted;
-      
 
       if (this.sound) {
         try {
@@ -953,7 +957,7 @@ function initGame(
           .text(
             this.cameras.main.centerX,
             this.cameras.main.centerY - 100,
-            "BOOST ACTIVATED",
+            "BOOST ACTIVATED! Speed x2 Points: +70 per orb",
             {
               fontSize: "24px",
               fontFamily: "monospace",
@@ -986,7 +990,7 @@ function initGame(
           .setDepth(100);
 
         this.tweens.add({
-          targets: [this.aiMessage, suggestAI],
+          targets: [suggestAI],
           alpha: 0,
           ease: "Power2",
           duration: 500,
@@ -1022,7 +1026,7 @@ function initGame(
             .text(
               this.cameras.main.centerX,
               this.cameras.main.centerY - 150,
-              "OVERDRIVE MODE ACTIVATED!",
+              "OVERDRIVE MODE ACTIVATED! Points: +35 per orb",
               {
                 fontSize: "28px",
                 fontFamily: "monospace",
@@ -1151,7 +1155,16 @@ function initGame(
       orb.disableBody(true, true);
       this.collectSound.play();
 
-      this.score += 100;
+      let orbPoints = 100;
+
+      if (this.isAiActive && this.isBoostActive) {
+        orbPoints = 35;
+      } else if (this.isAiActive) {
+        orbPoints = 50;
+      } else if (this.isBoostActive) {
+        orbPoints = 70;
+      }
+
       this.scoreText.setText(`Score: ${this.score}`);
       this.dispatchEvent("scoreUpdate", { score: this.score });
 
@@ -1672,11 +1685,13 @@ function initGame(
   if (window.game) {
     try {
       if (window.game.sound && window.game.sound.sounds) {
-        window.game.sound.sounds.forEach((sound: { isPlaying: boolean; stop: () => void }) => {
-          if (sound.isPlaying) {
-            sound.stop();
+        window.game.sound.sounds.forEach(
+          (sound: { isPlaying: boolean; stop: () => void }) => {
+            if (sound.isPlaying) {
+              sound.stop();
+            }
           }
-        });
+        );
       }
       window.game.destroy(true);
       window.game = null;

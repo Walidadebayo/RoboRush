@@ -43,14 +43,18 @@ self.addEventListener('fetch', event => {
               return response;
             }
 
-            const responseToCache = response.clone();
-
-            caches.open(CACHE_NAME)
-              .then(cache => {
-                if (!event.request.url.includes('/api/')) {
+            // Only cache GET requests with http/https scheme
+            if (
+              event.request.method === 'GET' &&
+              (event.request.url.startsWith('http://') || event.request.url.startsWith('https://')) &&
+              !event.request.url.includes('/api/')
+            ) {
+              const responseToCache = response.clone();
+              caches.open(CACHE_NAME)
+                .then(cache => {
                   cache.put(event.request, responseToCache);
-                }
-              });
+                });
+            }
 
             return response;
           }

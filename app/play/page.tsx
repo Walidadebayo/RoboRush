@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { RefreshCw, Pause, Play, Heart } from "lucide-react";
+import { RefreshCw, Pause, Play, Heart, Zap } from "lucide-react";
 import ScoreModal from "@/components/score-modal";
 import GameEngine from "@/components/game-engine";
 import PlayerNameModal from "@/components/player-name-modal";
@@ -583,6 +583,11 @@ export default function PlayGame() {
                 <div>Time: 60 Seconds</div>
                 <div>Score: +100 per Orb</div>
                 <div>Time Bonus: +200 Points</div>
+                <div>AI Assist: Use AI to automate gameplay - +50 Points</div>
+                <div className="flex items-center gap-1">
+                  <Zap className="h-4 w-4"/> Boost Speed: Use boost mode to speed up the robot- +50
+                  points
+                </div>
               </div>
             </div>
             <Button

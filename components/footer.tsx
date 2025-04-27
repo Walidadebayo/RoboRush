@@ -22,7 +22,6 @@ export default function Footer() {
             </p>
           </div>
           
-          {/* Quick links */}
           <div>
             <h3 className="text-lg font-medium mb-4 text-purple-300">Quick Links</h3>
             <ul className="space-y-2">
@@ -39,7 +38,6 @@ export default function Footer() {
             </ul>
           </div>
           
-          {/* Connect section */}
           <div>
             <h3 className="text-lg font-medium mb-4 text-purple-300">Connect</h3>
             <div className="flex space-x-4 mb-4">
@@ -68,6 +66,15 @@ export default function Footer() {
               className="group flex items-center space-x-2 text-sm text-gray-400 hover:text-purple-300 transition"
             >
               <span>Created by Walid Adebayo</span>
+              <ExternalLink size={14} className="opacity-70 group-hover:opacity-100 transition" />
+            </Link>
+            <Link 
+              href="https://www.alibabacloud.com/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="group flex items-center space-x-2 text-sm text-gray-400 hover:text-purple-300 transition"
+            >
+              <span>Inspired by Alibaba Cloud</span>
               <ExternalLink size={14} className="opacity-70 group-hover:opacity-100 transition" />
             </Link>
           </div>

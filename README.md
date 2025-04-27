@@ -1,7 +1,7 @@
 # RoboRush
 
 <div align="center">
-    <img src="https://roborush-ashen.vercel.app/images/icon-512.png" alt="RoboRush Logo" width="100"/>>
+    <img src="https://raw.githubusercontent.com/Walidadebayo/RoboRush/main/public/images/icon-512.png" alt="RoboRush Logo" width="100"/>>
 </div>
 
 RoboRush is an engaging browser-based arcade game where players control a robot to collect energy orbs while avoiding hazards in a race against time. The game features offline play capabilities, AI assistance, and global leaderboards.
@@ -39,7 +39,10 @@ RoboRush is an engaging browser-based arcade game where players control a robot 
 
 ## 📱 Screenshots
 
-![Gameplay Screenshot](https://roborush-ashen.vercel.app/images/gameplay.gif)
+![RoboRush Gameplay](https://raw.githubusercontent.com/Walidadebayo/RoboRush/main/public/images/home.png)
+![Desktop](https://raw.githubusercontent.com/Walidadebayo/RoboRush/main/public/images/gameplay.gif)
+![Mobile](https://raw.githubusercontent.com/Walidadebayo/RoboRush/main/public/images/gameplay2.gif)
+![Leaderboard](https://raw.githubusercontent.com/Walidadebayo/RoboRush/main/public/images/leaderboard.png)
 
 ## 🎮 How to Play
 
@@ -62,6 +65,8 @@ RoboRush is an engaging browser-based arcade game where players control a robot 
 
 4. **Scoring**:
    - +100 points per orb
+   - AI Assistant: +50 points per orb collected by AI
+   - Speed Boost: +70 points for each orb collected while in speed boost mode
    - +10 points per second remaining (time bonus)
    - -50 points when hit by a hazard
 
@@ -106,7 +111,7 @@ RoboRush is an engaging browser-based arcade game where players control a robot 
    DB_HOST=localhost
    DB_USER=root
    DB_PASSWORD=password
-   DB_NAME=roborush_db
+   DB_NAME=roborush
    DB_PORT=3306
    ```
 
