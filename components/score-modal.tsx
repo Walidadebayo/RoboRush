@@ -68,7 +68,7 @@ export default function ScoreModal({
     }
 
     try {
-      const response = await fetch("/api/submit-scores-batch", {
+      const response = await fetch("/api/submit-score", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -127,11 +127,11 @@ export default function ScoreModal({
     setError(null);
 
     try {
-      const offlineScores = JSON.parse(
-        localStorage.getItem("roborush-offline-scores") || "[]"
+      const playerOfflineData = JSON.parse(
+        localStorage.getItem("roborush-player-data") || "{}"
       );
 
-      if (offlineScores.length === 0) {
+      if (Object.keys(playerOfflineData).length === 0) {
         setPendingSync(false);
         setSubmitting(false);
         return;
@@ -142,14 +142,14 @@ export default function ScoreModal({
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ scores: offlineScores }),
+        body: JSON.stringify(playerOfflineData),
       });
 
       if (!response.ok) {
         throw new Error("Failed to sync offline scores");
       }
 
-      localStorage.removeItem("roborush-offline-scores");
+      localStorage.removeItem("roborush-player-data");
       setPendingSync(false);
     } catch {
       setError("Failed to sync offline scores. Please try again later.");
@@ -160,10 +160,10 @@ export default function ScoreModal({
 
   useEffect(() => {
     try {
-      const offlineScores = JSON.parse(
+      const playerData = JSON.parse(
         localStorage.getItem("roborush-player-data") || "{}"
       );
-      setPendingSync(Object.keys(offlineScores).length > 0);
+      setPendingSync(Object.keys(playerData).length > 0);
     } catch (e) {
       console.error("Error checking offline scores:", e);
     }
@@ -213,8 +213,8 @@ export default function ScoreModal({
             <div className="mb-4 bg-amber-900/30 border border-amber-600/30 rounded-md p-3 flex items-center text-amber-300">
               <WifiOff className="h-5 w-5 mr-2" />
               <div className="text-sm">
-                You&#39;re offline. Your score will be saved locally and submitted
-                when you reconnect.
+                You&#39;re offline. Your score will be saved locally and
+                submitted when you reconnect.
               </div>
             </div>
           )}
