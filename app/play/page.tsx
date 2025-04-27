@@ -125,73 +125,56 @@ export default function PlayGame() {
     };
   }, [isOffline, syncOfflineData]);
 
-  useEffect(() => {
-    const savedName = localStorage.getItem("roborush-player-name");
-    if (savedName) {
-      setPlayerName(savedName);
+  const fetchPlayerData = useCallback(
+    async (playerName: string) => {
+      fetch("/api/player", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name: playerName }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data && data.attempts) {
+            const cachedDataStr = localStorage.getItem("roborush-player-data");
+            if (cachedDataStr) {
+              try {
+                const cachedData = JSON.parse(cachedDataStr);
 
-      if (navigator.onLine) {
-        fetch("/api/player", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ name: savedName }),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data && data.attempts) {
-              const cachedDataStr = localStorage.getItem(
-                "roborush-player-data"
-              );
-              if (cachedDataStr) {
-                try {
-                  const cachedData = JSON.parse(cachedDataStr);
+                const mergedData = {
+                  score: Math.max(data.score || 0, cachedData.score || 0),
+                  time: Math.max(data.time || 0, cachedData.time || 0),
+                  attempts: Math.max(
+                    data.attempts || 1,
+                    cachedData.attempts || 1
+                  ),
+                  playerName: playerName,
+                };
 
-                  const mergedData = {
-                    score: Math.max(data.score || 0, cachedData.score || 0),
-                    time: Math.max(data.time || 0, cachedData.time || 0),
-                    attempts: Math.max(
-                      data.attempts || 1,
-                      cachedData.attempts || 1
-                    ),
-                    playerName: savedName,
-                  };
+                setAttempts(mergedData.attempts);
+                setTime(mergedData.time);
+                setScore(mergedData.score);
+                setGameData(mergedData);
 
-                  setAttempts(mergedData.attempts);
-                  setTime(mergedData.time);
-                  setScore(mergedData.score);
-                  setGameData(mergedData);
+                localStorage.setItem(
+                  "roborush-player-data",
+                  JSON.stringify({
+                    score: mergedData.score,
+                    time: mergedData.time,
+                    attempts: mergedData.attempts,
+                  })
+                );
 
-                  localStorage.setItem(
-                    "roborush-player-data",
-                    JSON.stringify({
-                      score: mergedData.score,
-                      time: mergedData.time,
-                      attempts: mergedData.attempts,
-                    })
-                  );
-
-                  if (
-                    cachedData.score > data.score ||
-                    cachedData.time > data.time ||
-                    cachedData.attempts > data.attempts
-                  ) {
-                    syncOfflineData();
-                  }
-                } catch (e) {
-                  console.error("Error processing cached data:", e);
-                  setAttempts(data.attempts);
-                  setTime(data.time);
-                  setScore(data.score);
-                  setGameData({
-                    score: data.score,
-                    time: data.time,
-                    attempts: data.attempts,
-                    playerName: savedName,
-                  });
+                if (
+                  cachedData.score > data.score ||
+                  cachedData.time > data.time ||
+                  cachedData.attempts > data.attempts
+                ) {
+                  syncOfflineData();
                 }
-              } else {
+              } catch (e) {
+                console.error("Error processing cached data:", e);
                 setAttempts(data.attempts);
                 setTime(data.time);
                 setScore(data.score);
@@ -199,29 +182,51 @@ export default function PlayGame() {
                   score: data.score,
                   time: data.time,
                   attempts: data.attempts,
-                  playerName: savedName,
+                  playerName: playerName,
                 });
-
-                localStorage.setItem(
-                  "roborush-player-data",
-                  JSON.stringify({
-                    score: data.score,
-                    time: data.time,
-                    attempts: data.attempts,
-                  })
-                );
               }
+            } else {
+              setAttempts(data.attempts);
+              setTime(data.time);
+              setScore(data.score);
+              setGameData({
+                score: data.score,
+                time: data.time,
+                attempts: data.attempts,
+                playerName: playerName,
+              });
+
+              localStorage.setItem(
+                "roborush-player-data",
+                JSON.stringify({
+                  score: data.score,
+                  time: data.time,
+                  attempts: data.attempts,
+                })
+              );
             }
-          })
-          .catch((error) => {
-            console.error("Error fetching player data:", error);
-            UseCachedPlayerData(savedName);
-          });
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching player data:", error);
+          UseCachedPlayerData(playerName);
+        });
+    },
+    [syncOfflineData]
+  );
+
+  useEffect(() => {
+    const savedName = localStorage.getItem("roborush-player-name");
+    if (savedName) {
+      setPlayerName(savedName);
+
+      if (navigator.onLine) {
+        fetchPlayerData(savedName);
       } else {
         UseCachedPlayerData(savedName);
       }
     }
-  }, [syncOfflineData]);
+  }, [syncOfflineData, fetchPlayerData]);
 
   const UseCachedPlayerData = (playerName: string) => {
     const cachedDataStr = localStorage.getItem("roborush-player-data");
@@ -245,6 +250,7 @@ export default function PlayGame() {
 
   const handleNameSubmit = (name: string) => {
     setPlayerName(name);
+    fetchPlayerData(name);
     setShowNameModal(false);
     startGame();
     setShowNameModal(false);
@@ -286,11 +292,13 @@ export default function PlayGame() {
     if (typeof window !== "undefined" && window.game) {
       try {
         if (window.game.sound && window.game.sound.sounds) {
-          window.game.sound.sounds.forEach((sound: { isPlaying: boolean; stop: () => void }) => {
-            if (sound.isPlaying) {
-              sound.stop();
+          window.game.sound.sounds.forEach(
+            (sound: { isPlaying: boolean; stop: () => void }) => {
+              if (sound.isPlaying) {
+                sound.stop();
+              }
             }
-          });
+          );
         }
 
         window.game.destroy(true);
@@ -313,11 +321,13 @@ export default function PlayGame() {
     if (typeof window !== "undefined" && window.game) {
       try {
         if (window.game.sound && window.game.sound.sounds) {
-          window.game.sound.sounds.forEach((sound: { isPlaying: boolean; stop: () => void }) => {
-            if (sound.isPlaying) {
-              sound.stop();
+          window.game.sound.sounds.forEach(
+            (sound: { isPlaying: boolean; stop: () => void }) => {
+              if (sound.isPlaying) {
+                sound.stop();
+              }
             }
-          });
+          );
         }
 
         window.game.destroy(true);
@@ -442,8 +452,8 @@ export default function PlayGame() {
                 clipRule="evenodd"
               />
             </svg>
-            You&#39;re currently playing offline. Your scores will be saved locally
-            and synced when you&#39;re back online.
+            You&#39;re currently playing offline. Your scores will be saved
+            locally and synced when you&#39;re back online.
           </p>
         </div>
       )}
