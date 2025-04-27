@@ -19,7 +19,6 @@ export default function PlayerNameModal({
   const [name, setName] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isOffline, setIsOffline] = useState(false);
 
   useEffect(() => {
     const savedName = localStorage.getItem("roborush-player-name");
@@ -37,7 +36,6 @@ export default function PlayerNameModal({
     }
     if (!navigator.onLine) {
       localStorage.setItem("roborush-player-name", name);
-      setIsOffline(true);
       setError("You are offline. Your name has been saved locally.");
       onSubmit(name);
       return;
