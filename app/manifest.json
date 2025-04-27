@@ -1,0 +1,50 @@
+{
+    "name": "RoboRush - Energy Collection Game",
+    "short_name": "RoboRush",
+    "description": "Navigate your robot through mazes, collect energy orbs, and avoid hazards in this exciting arcade game!",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#111827",
+    "theme_color": "#7c3aed",
+    "icons": [
+        {
+            "src": "/images/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Start Game",
+            "short_name": "Play",
+            "description": "Start playing RoboRush",
+            "url": "/play",
+            "icons": [
+                {
+                    "src": "/images/icon-512.png",
+                    "sizes": "512x512"
+                }
+            ]
+        },
+        {
+            "name": "Leaderboard",
+            "short_name": "Scores",
+            "description": "Check the leaderboard",
+            "url": "/highscores",
+            "icons": [
+                {
+                    "src": "/images/icon-512.png",
+                    "sizes": "512x512"
+                }
+            ]
+        }
+    ],
+    "categories": [
+        "games",
+        "entertainment"
+    ],
+    "lang": "en-UK",
+    "dir": "ltr",
+    "prefer_related_applications": false
+}
