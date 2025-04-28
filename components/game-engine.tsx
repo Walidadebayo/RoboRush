@@ -1155,17 +1155,16 @@ function initGame(
       orb.disableBody(true, true);
       this.collectSound.play();
 
-      let orbPoints = 100;
 
-      if (this.isAiActive && this.isBoostActive) {
-        orbPoints = 35;
-      } else if (this.isAiActive) {
-        orbPoints = 50;
-      } else if (this.isBoostActive) {
-        orbPoints = 70;
+      if (this.aiActive && this.boostActive) {
+        this.score += 35;
+      } else if (this.aiActive) {
+        this.score += 50;
+      } else if (this.boostActive) {
+        this.score += 70;
+      } else {
+        this.score += 100;
       }
-
-      this.score += orbPoints;
 
       this.scoreText.setText(`Score: ${this.score}`);
       this.dispatchEvent("scoreUpdate", { score: this.score });
