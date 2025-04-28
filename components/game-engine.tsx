@@ -1165,6 +1165,8 @@ function initGame(
         orbPoints = 70;
       }
 
+      this.score += orbPoints;
+
       this.scoreText.setText(`Score: ${this.score}`);
       this.dispatchEvent("scoreUpdate", { score: this.score });
 
