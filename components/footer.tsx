@@ -65,16 +65,7 @@ export default function Footer() {
               rel="noopener noreferrer"
               className="group flex items-center space-x-2 text-sm text-gray-400 hover:text-purple-300 transition"
             >
-              <span>Created by Walid Adebayo</span>
-              <ExternalLink size={14} className="opacity-70 group-hover:opacity-100 transition" />
-            </Link>
-            <Link 
-              href="https://www.alibabacloud.com/" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="group flex items-center space-x-2 text-sm text-gray-400 hover:text-purple-300 transition"
-            >
-              <span>Inspired by Alibaba Cloud</span>
+              <span>Created with ❤️ by Walid Adebayo</span>
               <ExternalLink size={14} className="opacity-70 group-hover:opacity-100 transition" />
             </Link>
           </div>
